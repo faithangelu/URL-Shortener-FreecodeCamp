@@ -29,30 +29,36 @@ app.listen(port, function() {
   console.log(`Listening on port ${port}`);
 });
 
-const isValidUrl = (original_url) => {
-  try { 
-    return Boolean(new URL(original_url)); 
-  }
-  catch(e){ 
-    return false; 
-  }
-}
+// const isValidUrl = (original_url) => {
+//   try { 
+//     return Boolean(new URL(original_url)); 
+//   }
+//   catch(e){ 
+//     return false; 
+//   }
+// }
 
 let jsonParser = bodyParser.json()
 let urlencodeParser = bodyParser.urlencoded({extended: false})
 
 
+
 app.post('/api/shorturl', urlencodeParser, (req, res) => {
   let original_url = req.body.url
 
+  const httpRegex = /^(http|https)(:\/\/)/;
+  if (!httpRegex.test(original_url)) {return res.json({ error: 'invalid url' })}
+  else {
   // check if URL is in valid format (https://www.example.com)
-  if(isValidUrl(original_url) === true) {
-    console.log(1)
-    // parse the URL and get the host 
-    let obj = new URL(original_url)
-    let host = JSON. stringify(obj)
-    dns.lookup(host, (err, address) => {
-     
+  // if(isValidUrl(original_url) === true) {
+  //   console.log(1)
+  //   // parse the URL and get the host 
+    // let obj = new URL(original_url)
+    // let host = JSON. stringify(obj)
+    // dns.lookup(host, (err, address) => {
+    // dns.lookup(original_url, (err, address, family) => {
+      // console.log('address: %j family: IPv%s', address, family);
+    //   console.log(err)
       var short_url  = "faith.ly-" + Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
           
       let urlDetails = new db({
@@ -69,9 +75,9 @@ app.post('/api/shorturl', urlencodeParser, (req, res) => {
           console.log(err)
       }
 
-    });
-  } else {
-    res.json({ error: "Invalid URL"})
+    // });
+  // } else {
+  //   res.json({ error: "Invalid URL"})
   }
 
 })
